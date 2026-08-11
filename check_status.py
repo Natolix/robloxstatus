@@ -19,9 +19,16 @@ def save_last_status(status_code):
 
 
 def send_discord_alert(status_desc, status_code):
-    emoji = "🟠" if status_code != "100" else "✅"
+    is_ok = status_code == "100"
     payload = {
-        "content": f"{emoji} **Roblox Status**: {status_desc}"
+        "embeds": [
+            {
+                "title": "✅ Roblox is operational" if is_ok else f"⛔ {status_desc}",
+                "description": "Everything is working!" if is_ok else "More information here: https://status.roblox.com",
+                "color": 3066993 if is_ok else 15158332,
+                "footer": {"text": "status.roblox.com"},
+            }
+        ]
     }
     requests.post(WEBHOOK_URL, json=payload, timeout=10)
 
